@@ -1,5 +1,4 @@
-# 스도구
-def num_check(x,row,col,arr):
+def num_check(x, row, col, arr):
     # 행 체크
     for i in range(9):
         if arr[row][i] == x:
@@ -18,36 +17,45 @@ def num_check(x,row,col,arr):
     # 위의 세 조건에 걸리지 않으면
     return True
 
-
-def find_empty(array):
+def sudoku(arr):
+    # 비어있는 칸 찾기
+    empty_found = False
     for i in range(9):
         for j in range(9):
-            if array[i][j]==0:
-                return (i,j) # 좌표 넘기기
-    return None
-
-
-def sudoku(array):
-    empty=find_empty(array)
-    if not empty:
+            if arr[i][j] == 0:
+                row, col = i, j
+                empty_found = True
+                break
+        if empty_found:
+            break
+    
+    # 모든 칸이 채워져 있으면 완성된 것
+    if not empty_found:
         return True
-
-    row,col=empty
+    
+    # 1부터 9까지 시도
     for num in range(1, 10):
-        if num_check(num, row, col, array): # true면
-            array[row][col] = num # 해당 값 배치
-            if sudoku(array): # 다음 값 재귀로 넘기기 
+        # 해당 위치에 num이 유효한지 확인
+        if num_check(num, row, col, arr):
+            # 유효하면 값 할당
+            arr[row][col] = num
+            
+            # 재귀적으로 다음 빈 칸 채우기
+            if sudoku(arr):
                 return True
-            # 안되면 백트래킹
-            array[row][col] = 0
+            
+            # 이 숫자로는 해결할 수 없으면 다시 0으로 되돌리기 (백트래킹)
+            arr[row][col] = 0
+    
+    # 1-9 중 어떤 숫자도 유효하지 않으면 이전 단계로 백트래킹
     return False
 
+# 입력 받기
+arr = [list(map(int, input().split())) for _ in range(9)]
 
-
-
-arr=[list(map(int,input().split())) for _ in range(9)]
+# 스도쿠 풀기
 sudoku(arr)
+
+# 결과 출력
 for row in arr:
     print(*row)
-
-
